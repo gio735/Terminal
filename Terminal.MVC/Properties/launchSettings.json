@@ -1,0 +1,44 @@
+{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5024"
+    },
+    "https": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "JWTConfiguration__Secret": "MegaSecretKeyForJWTWhichIsLongEnoughToWork:P",
+        "JWTConfiguration__ExpirationInMinutes": "30",
+        "SMTPConfiguration__From": "random735thname@gmail.com",
+        "SMTPConfiguration__Key": "JsDKrn3AOSB6RbCF",
+        "SMTPConfiguration__Host": "smtp-relay.brevo.com",
+        "SMTPConfiguration__Port": "587"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7087;http://localhost:5024"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:36011",
+      "sslPort": 44329
+    }
+  }
+}
