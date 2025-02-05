@@ -24,12 +24,17 @@ namespace Terminal.Persistence.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Vote>()
                 .HasKey(v => new { v.UserId, v.DefinitionId });
             modelBuilder.Entity<Vote>()
                 .Property(e => e.Likes).IsRequired();
-
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Definition>()
+                .HasMany(e => e.References).WithMany();
+            modelBuilder.Entity<Definition>().HasMany(e => e.Similars).WithMany();
+            modelBuilder.Entity<User>().Navigation(e => e.Reports).AutoInclude();
+            modelBuilder.Entity<User>().Navigation(e => e.Comments).AutoInclude();
+            modelBuilder.Entity<Definition>().Navigation(e => e.References).AutoInclude();
         }
 
 
@@ -80,7 +85,7 @@ namespace Terminal.Persistence.Data
         public DataContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-            optionsBuilder.UseSqlServer("Server=DESKTOP-BAGIRSC;Database=TerminalDEV;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=TerminalDEV;Trusted_Connection=True;TrustServerCertificate=True;");
 
             return new DataContext(optionsBuilder.Options);
         }

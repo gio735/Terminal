@@ -9,6 +9,5 @@ namespace Terminal.Application.Reports.Requests
     public class ReportCreationRequest
     {
         public string Content { get; set; }
-        public int DefinitionId { get; set; }
     }
 }

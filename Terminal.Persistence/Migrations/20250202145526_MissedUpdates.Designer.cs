@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Terminal.Persistence.Data;
 
@@ -11,9 +12,11 @@ using Terminal.Persistence.Data;
 namespace Terminal.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250202145526_MissedUpdates")]
+    partial class MissedUpdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,36 +24,6 @@ namespace Terminal.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DefinitionDefinition", b =>
-                {
-                    b.Property<int>("DefinitionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SimilarsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DefinitionId", "SimilarsId");
-
-                    b.HasIndex("SimilarsId");
-
-                    b.ToTable("DefinitionDefinition");
-                });
-
-            modelBuilder.Entity("DefinitionReference", b =>
-                {
-                    b.Property<int>("DefinitionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReferencesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DefinitionId", "ReferencesId");
-
-                    b.HasIndex("ReferencesId");
-
-                    b.ToTable("DefinitionReference");
-                });
 
             modelBuilder.Entity("Terminal.Domain.Models.Comment", b =>
                 {
@@ -100,6 +73,9 @@ namespace Terminal.Persistence.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DefinitionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("DefinitionState")
                         .HasColumnType("int");
 
@@ -138,6 +114,8 @@ namespace Terminal.Persistence.Migrations
 
                     b.HasIndex("AuthorId");
 
+                    b.HasIndex("DefinitionId");
+
                     b.ToTable("Definitions");
                 });
 
@@ -151,6 +129,9 @@ namespace Terminal.Persistence.Migrations
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("DefinitionId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DeletionDate")
                         .HasColumnType("datetime2");
@@ -173,6 +154,8 @@ namespace Terminal.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DefinitionId");
 
                     b.ToTable("References");
                 });
@@ -279,36 +262,6 @@ namespace Terminal.Persistence.Migrations
                     b.ToTable("Votes");
                 });
 
-            modelBuilder.Entity("DefinitionDefinition", b =>
-                {
-                    b.HasOne("Terminal.Domain.Models.Definition", null)
-                        .WithMany()
-                        .HasForeignKey("DefinitionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Terminal.Domain.Models.Definition", null)
-                        .WithMany()
-                        .HasForeignKey("SimilarsId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DefinitionReference", b =>
-                {
-                    b.HasOne("Terminal.Domain.Models.Definition", null)
-                        .WithMany()
-                        .HasForeignKey("DefinitionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Terminal.Domain.Models.Reference", null)
-                        .WithMany()
-                        .HasForeignKey("ReferencesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Terminal.Domain.Models.Comment", b =>
                 {
                     b.HasOne("Terminal.Domain.Models.User", "Author")
@@ -328,7 +281,18 @@ namespace Terminal.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Terminal.Domain.Models.Definition", null)
+                        .WithMany("Similars")
+                        .HasForeignKey("DefinitionId");
+
                     b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Terminal.Domain.Models.Reference", b =>
+                {
+                    b.HasOne("Terminal.Domain.Models.Definition", null)
+                        .WithMany("References")
+                        .HasForeignKey("DefinitionId");
                 });
 
             modelBuilder.Entity("Terminal.Domain.Models.Report", b =>
@@ -340,6 +304,13 @@ namespace Terminal.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Terminal.Domain.Models.Definition", b =>
+                {
+                    b.Navigation("References");
+
+                    b.Navigation("Similars");
                 });
 
             modelBuilder.Entity("Terminal.Domain.Models.User", b =>

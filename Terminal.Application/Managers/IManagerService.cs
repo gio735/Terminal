@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terminal.Application.Definitions.Requests;
 using Terminal.Application.Definitions.Responses;
 using Terminal.Domain.Models;
 
@@ -26,6 +27,6 @@ namespace Terminal.Application.Managers
         public Task RemoveSimilarToDefinition(int definitionId, int similarDefinitionId, CancellationToken cancellationToken);
         public Task AddReferenceToDefinition(int definitionId, int referenceId, CancellationToken cancellationToken);
         public Task RemoveReferenceToDefinition(int definitionId, int referenceId, CancellationToken cancellationToken);
-        public Task UpdateDefinition(Definition entity, CancellationToken cancellationToken);
+        public Task UpdateDefinition(DefinitionUpdateRequest entity, CancellationToken cancellationToken);
     }
 }

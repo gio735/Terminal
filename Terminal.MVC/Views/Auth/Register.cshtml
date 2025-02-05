@@ -1,43 +1,90 @@
 ﻿@model Terminal.MVC.Models.UserRegisterModel
 
 @{
-    ViewData["Title"] = "Register";
+	ViewData["Title"] = "Register";
 }
 
-<h1>Register</h1>
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<h4>UserRegisterModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Register">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    .container {
+        margin-top: 25px;
+    }
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        background: linear-gradient(to bottom, #ffffff, #f2f4f6);
+    }
+
+    .card-title {
+        font-weight: 700;
+        font-size: 24px;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #333;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .form-control {
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: background-color 0.3s;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+</style>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<div class="card">
+				<h2 class="card-title">Register</h2>
+				<hr>
+				<form asp-action="Register">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<div class="form-group">
+						<label asp-for="UserName" class="control-label"></label>
+						<input asp-for="UserName" class="form-control" />
+						<span asp-validation-for="UserName" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="Email" class="control-label"></label>
+						<input asp-for="Email" class="form-control" />
+						<span asp-validation-for="Email" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="Password" class="control-label"></label>
+						<input asp-for="Password" class="form-control" />
+						<span asp-validation-for="Password" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<input type="submit" value="Create" class="btn btn-primary" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }

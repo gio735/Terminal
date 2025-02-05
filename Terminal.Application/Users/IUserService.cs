@@ -8,6 +8,7 @@ using Terminal.Application.Definitions.Requests;
 using Terminal.Application.Definitions.Responses;
 using Terminal.Application.Reports.Requests;
 using Terminal.Application.Users.Requests;
+using Terminal.Application.Votes.Requests;
 using Terminal.Domain.Models;
 using Terminal.Domain.Utilities;
 
@@ -25,7 +26,7 @@ namespace Terminal.Application.Users
         public Task<List<(DefinitionResponseModel, bool?)>> GetRandomDefinitionsForMainPage(CancellationToken cancellationToken);
         public Task<(DefinitionResponseModel, bool?)> GetRandomDefinition(CancellationToken cancellationToken);
         public Task<(DefinitionResponseModel, bool?)> GetDefinition(int definitionId, CancellationToken cancellationToken);
-        public Task SetVote(Vote vote, CancellationToken cancellationToken);
-        public Task SendReport(ReportCreationRequest report, CancellationToken cancellationToken);
+        public Task SetVote(VoteRequestModel vote, CancellationToken cancellationToken);
+        public Task SendReport(int id, ReportCreationRequest report, CancellationToken cancellationToken);
     }
 }

@@ -12,6 +12,7 @@ using Terminal.Application.Reports.Requests;
 using Terminal.Application.Users.Repositories;
 using Terminal.Application.Users.Requests;
 using Terminal.Application.Votes.Repositories;
+using Terminal.Application.Votes.Requests;
 using Terminal.Domain.Models;
 using Terminal.Domain.Utilities;
 
@@ -235,7 +236,7 @@ namespace Terminal.Application.Users
         public async Task SuggestDefinition(DefinitionCreationRequest entity, CancellationToken cancellationToken)
         {
             var exists = await _definitionRepository.Exists(entity.GeorgianTitle, entity.EnglishTitle);
-            if (exists == null)
+            if (exists != null)
             {
                 throw new("Definition with such title already exists.");
             }
@@ -250,8 +251,10 @@ namespace Terminal.Application.Users
             definition.DefinitionState = Domain.DefinitionState.Pending;
             await _definitionRepository.AddAsync(definition, cancellationToken);
         }
-        public async Task SetVote(Vote vote, CancellationToken cancellationToken)
+        public async Task SetVote(VoteRequestModel newVote, CancellationToken cancellationToken)
         {
+            var vote = newVote.Adapt<Vote>();
+            vote.UserId = int.Parse(_userId);
             var existingVote = await _voteRepository.GetByIdAsync(cancellationToken, vote.UserId, vote.DefinitionId);
             if (existingVote == null)
             {
@@ -279,7 +282,7 @@ namespace Terminal.Application.Users
                 }
             }
         }
-        public async Task SendReport(ReportCreationRequest report, CancellationToken cancellationToken)
+        public async Task SendReport(int id, ReportCreationRequest report, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(cancellationToken, int.Parse(_userId));
             var userReportsCount = (await _reportRepository.GetAll(cancellationToken)).Where(e => e.Author.Id == user.Id).Count();
@@ -288,6 +291,7 @@ namespace Terminal.Application.Users
                 throw new("Can't have more than 5 reports at the same time.");
             }
             Report newReport = report.Adapt<Report>();
+            newReport.DefinitionId = id;
             newReport.ReportState = Domain.ReportState.Pending;
             newReport.Author = user;
             user.Reports.Add(newReport);

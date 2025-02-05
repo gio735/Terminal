@@ -1,0 +1,171 @@
+﻿@using Terminal.Application.Definitions.Responses
+@model (DefinitionResponseModel, bool?)
+<style>
+	body {
+		background-color: #f8f9fa;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	.container {
+		margin-top: 25px;
+	}
+
+	.card {
+		border: none;
+		border-radius: 10px;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		padding: 40px;
+		background: linear-gradient(to bottom, #ffffff, #f2f4f6);
+	}
+
+	.card-title {
+		font-weight: 700;
+		font-size: 24px;
+		margin-bottom: 30px;
+		text-align: center;
+		color: #333;
+	}
+
+	.form-group label {
+		font-weight: 600;
+		color: #555;
+	}
+
+	.form-control {
+		border-radius: 5px;
+	}
+
+	.btn-primary {
+		background-color: #007bff;
+		border: none;
+		border-radius: 5px;
+		font-weight: 600;
+		transition: background-color 0.3s;
+	}
+
+		.btn-primary:hover {
+			background-color: #0056b3;
+		}
+</style>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<div class="card">
+				<div class="definition-container" id="english-@Model.Item1.Id" style="display:block;">
+					<div style="display:flex; flex-direction:row; width:100%;">
+						<h3>@Model.Item1.EnglishTitle</h3>
+						<div style="margin-right:10px; margin-left:auto;">
+							<button style="background-color:#1b9cf2; margin-right:10px; margin-left:auto;" onclick="getGeorgian(@Model.Item1.Id)">Georgian</button>
+
+							<button style="background-color:#1b9cf2; margin-right:10px; margin-left:auto;"><a asp-area="" asp-controller="User" asp-action="ReportDefinition" asp-route-id="@Model.Item1.Id">Report</a></button>
+						</div>
+					</div>
+					<div>
+						<p>@Model.Item1.EnglishContent</p>
+					</div>
+					<div>
+						<h5>References:</h5>
+						<p>
+							@foreach (var reference in Model.Item1.References)
+							{
+								<a asp-area="" asp-controller="Home" asp-action="Definition" asp-route-id="@reference.ReferenceId">@reference.EnglishTitle;</a>
+							}
+						</p>
+					</div>
+					<div>
+						<h5>Similars:</h5>
+						<p>
+							@foreach (var similar in Model.Item1.Similars)
+							{
+								<a asp-area="" asp-controller="Home" asp-action="Definition" asp-route-id="@similar.Id">@similar.EnglishTitle;</a>
+							}
+						</p>
+					</div>
+					<div style="margin-right:10px; margin-left:auto; display:flex; flex-direction:row;">
+						@if (User.Identity?.IsAuthenticated == true)
+						{
+							<img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" onclick="upvote(@Model.Item1.Id)" src="~/images/upvote.png" />
+						}
+						else
+						{
+							<a asp-area="" asp-controller="Auth" asp-action="SignIn" style="width:34px; height:34px; margin-right:10px; margin-left:auto;"><img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" src="~/images/upvote.png" /></a>
+						}
+						<p style="margin-right:10px;">@Model.Item1.UpvoteCount</p>
+					</div>
+					<div style="margin-right:10px; margin-left:auto;">
+						@{
+							var totalVotes = Model.Item1.DownvoteCount + Model.Item1.UpvoteCount;
+						}
+						<p style="text-align:right; margin-right:10px;">Total: @totalVotes</p>
+					</div>
+					<div style="margin-right:10px; margin-left:auto; display:flex; flex-direction:row;">
+						@if (User.Identity?.IsAuthenticated == true)
+						{
+							<img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" onclick="downvote(@Model.Item1.Id)" src="~/images/downvote.png" />
+						}
+						else
+						{
+							<a asp-area="" asp-controller="Auth" asp-action="SignIn" style="width:34px; height:34px; margin-right:10px; margin-left:auto;"><img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" src="~/images/downvote.png" /></a>
+						}
+						<p style="margin-right:10px;">@Model.Item1.DownvoteCount</p>
+					</div>
+				</div>
+				<div class="definition-container" id="georgian-@Model.Item1.Id" style="display:none;">
+					<div style="display:flex; flex-direction:row; width:100%;">
+						<h3>@Model.Item1.GeorgianTitle</h3>
+						<div style="margin-right:10px; margin-left:auto;">
+							<button style="background-color:#1b9cf2; margin-right:10px; margin-left:auto;" onclick="getEnglish(@Model.Item1.Id)">English</button>
+
+							<button style="background-color:#1b9cf2; margin-right:10px; margin-left:auto;"><a asp-area="" asp-controller="User" asp-action="ReportDefinition" asp-route-id="@Model.Item1.Id">Report</a></button>
+						</div>
+					</div>
+					<div>
+						<p style="margin-right:10px; margin-left:auto">@Model.Item1.GeorgianContent</p>
+					</div><div>
+						<h5>References:</h5>
+						<p>
+							@foreach (var reference in Model.Item1.References)
+							{
+								<a asp-area="" asp-controller="Home" asp-action="Definition" asp-route-id="@reference.ReferenceId">@reference.GeorgianTitle;</a>
+							}
+						</p>
+					</div>
+					<div>
+						<h5>Similars:</h5>
+						<p>
+							@foreach (var similar in Model.Item1.Similars)
+							{
+								<a asp-area="" asp-controller="Home" asp-action="Definition" asp-route-id="@similar.Id">@similar.GeorgianTitle;</a>
+							}
+						</p>
+					</div>
+					<div style="margin-right:10px; margin-left:auto; display:flex; flex-direction:row;">
+						@if (User.Identity?.IsAuthenticated == true)
+						{
+							<img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" onclick="upvote(@Model.Item1.Id)" src="~/images/upvote.png" />
+						}
+						else
+						{
+							<a asp-area="" asp-controller="Auth" asp-action="SignIn" style="width:34px; height:34px; margin-right:10px; margin-left:auto;"><img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" src="~/images/upvote.png" /></a>
+						}
+						<p style="margin-right:10px;">@Model.Item1.UpvoteCount</p>
+					</div>
+					<div style="margin-right:10px; margin-left:auto;">
+						<p style="text-align:right; margin-right:10px;">Total: @totalVotes</p>
+					</div>
+					<div style="margin-right:10px; margin-left:auto; display:flex; flex-direction:row;">
+						@if (User.Identity?.IsAuthenticated == true)
+						{
+							<img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" onclick="downvote(@Model.Item1.Id)" src="~/images/downvote.png" />
+						}
+						else
+						{
+							<a asp-area="" asp-controller="Auth" asp-action="SignIn" style="width:34px; height:34px; margin-right:10px; margin-left:auto;"><img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" src="~/images/downvote.png" /></a>
+						}
+						<p style="margin-right:10px;">@Model.Item1.DownvoteCount</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

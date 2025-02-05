@@ -6,7 +6,9 @@ using Terminal.Application.Definitions.Responses;
 using Terminal.Application.References.Responses;
 using Terminal.Application.Users.Requests;
 using Terminal.Application.Users.Responses;
+using Terminal.Application.Votes.Requests;
 using Terminal.Domain.Models;
+using Terminal.Domain.Utilities;
 using Terminal.MVC.Models;
 
 namespace Terminal.MVC.Infrastructure.Mappings
@@ -32,6 +34,9 @@ namespace Terminal.MVC.Infrastructure.Mappings
 
 
             TypeAdapterConfig<UserSignInModel, UserLoginRequest>
+            .NewConfig();
+
+            TypeAdapterConfig<VoteRequestModel, Vote>
             .NewConfig();
             return services;
         }

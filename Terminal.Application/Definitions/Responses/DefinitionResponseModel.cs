@@ -19,7 +19,7 @@ namespace Terminal.Application.Definitions.Responses
         public User Author { get; set; }
         public int UpvoteCount { get; set; }
         public int DownvoteCount { get; set; }
-        public Reference References { get; set; }
+        public List<Reference> References { get; set; }
         public List<DefinitionResponseModel> Similars { get; set; }
     }
 }

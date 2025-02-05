@@ -118,5 +118,11 @@ namespace Terminal.MVC.Controllers
             }
             return View();
         }
+
+        new public async Task<IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("SignIn");
+        }
     }
 }

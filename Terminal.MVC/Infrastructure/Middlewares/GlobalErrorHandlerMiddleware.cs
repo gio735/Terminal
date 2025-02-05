@@ -49,7 +49,7 @@ namespace Terminal.MVC.Infrastructure.Middlewares
                         break;
                     default:
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        result = JsonSerializer.Serialize(new { message = ErrorMessages.InternalError });
+                        result = JsonSerializer.Serialize(new { message = error.Message });
                         break;
                 };
                 await response.WriteAsync(result);

@@ -1,8 +1,231 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<(Terminal.Application.Definitions.Responses.DefinitionResponseModel, bool?)>
+@{
+	ViewData["Title"] = "Home Page";
 }
+<style>
+	.definitions-container {
+		width: 60%;
+		margin-left: 20%;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+	}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+	.definition-container {
+		width: 100%;
+		padding: 30px;
+		border: 1px solid #ccc;
+		border-radius: 25px;
+		font-size: 16px;
+		background-color: white;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	}
+
+	a {
+		text-decoration: none;
+		color: black;
+	}
+
+</style>
+
+<div class="definitions-container" style="">
+	@foreach (var definition in Model)
+	{
+		<div class="definition-container" id="english-@definition.Item1.Id" style="display:block;">
+			<div style="display:flex; flex-direction:row; width:100%;">
+				<h3>@definition.Item1.EnglishTitle</h3>
+				<div style="margin-right:10px; margin-left:auto;">
+					<button style="background-color:#1b9cf2; margin-right:10px; margin-left:auto;" onclick="getGeorgian(@definition.Item1.Id)">Georgian</button>
+
+					<button style="background-color:#1b9cf2; margin-right:10px; margin-left:auto;"><a asp-area="" asp-controller="User" asp-action="ReportDefinition" asp-route-id="@definition.Item1.Id">Report</a></button>
+				</div>
+			</div>
+			<div>
+				<p>@definition.Item1.EnglishContent</p>
+			</div>
+			<div>
+				<h5>References:</h5>
+				<p>
+					@foreach (var reference in definition.Item1.References)
+					{
+						<a asp-area="" asp-controller="Home" asp-action="Definition" asp-route-id="@reference.ReferenceId">@reference.EnglishTitle;</a>
+					}
+				</p>
+			</div>
+			<div>
+				<h5>Similars:</h5>
+				<p>
+					@foreach (var similar in definition.Item1.Similars)
+					{
+						<a asp-area="" asp-controller="Home" asp-action="Definition" asp-route-id="@similar.Id">@similar.EnglishTitle;</a>
+					}
+				</p>
+			</div>
+			<div style="margin-right:10px; margin-left:auto; display:flex; flex-direction:row;">
+				@if (User.Identity?.IsAuthenticated == true)
+				{
+					<img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" onclick="upvote(@definition.Item1.Id)" src="~/images/upvote.png" />
+				}
+				else
+				{
+					<a asp-area="" asp-controller="Auth" asp-action="SignIn" style="width:34px; height:34px; margin-right:10px; margin-left:auto;"><img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" src="~/images/upvote.png" /></a>
+				}
+				@if (definition.Item2 == true)
+				{
+					<p id="eu-@definition.Item1.Id" style="margin-right:10px; color:blue">@definition.Item1.UpvoteCount</p>
+				}
+				else
+				{
+					<p id="eu-@definition.Item1.Id" style="margin-right:10px; color:black">@definition.Item1.UpvoteCount</p>
+				}
+			</div>
+			<div style="margin-right:10px; margin-left:auto;">
+				@{
+					var totalVotes = definition.Item1.DownvoteCount + definition.Item1.UpvoteCount;
+				}
+				<p style="text-align:right; margin-right:10px;">Total: @totalVotes</p>
+			</div>
+			<div style="margin-right:10px; margin-left:auto; display:flex; flex-direction:row;">
+				@if (User.Identity?.IsAuthenticated == true)
+				{
+					<img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" onclick="downvote(@definition.Item1.Id)" src="~/images/downvote.png" />
+				}
+				else
+				{
+					<a asp-area="" asp-controller="Auth" asp-action="SignIn" style="width:34px; height:34px; margin-right:10px; margin-left:auto;"><img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" src="~/images/downvote.png" /></a>
+				}
+				@if (definition.Item2 == false)
+				{
+					<p id="ed-@definition.Item1.Id" style="margin-right:10px; color:blue">@definition.Item1.DownvoteCount</p>
+				}
+				else
+				{
+					<p id="ed-@definition.Item1.Id" style="margin-right:10px; color:black;">@definition.Item1.DownvoteCount</p>
+				}
+			</div>
+		</div>
+		<div class="definition-container" id="georgian-@definition.Item1.Id" style="display:none;">
+			<div style="display:flex; flex-direction:row; width:100%;">
+				<h3>@definition.Item1.GeorgianTitle</h3>
+				<div style="margin-right:10px; margin-left:auto;">
+					<button style="background-color:#1b9cf2; margin-right:10px; margin-left:auto;" onclick="getEnglish(@definition.Item1.Id)">English</button>
+
+					<button style="background-color:#1b9cf2; margin-right:10px; margin-left:auto;"><a asp-area="" asp-controller="User" asp-action="ReportDefinition" asp-route-id="@definition.Item1.Id">Report</a></button>
+				</div>
+			</div>
+			<div>
+				<p style="margin-right:10px; margin-left:auto">@definition.Item1.GeorgianContent</p>
+			</div><div>
+				<h5>References:</h5>
+				<p>
+					@foreach (var reference in definition.Item1.References)
+					{
+						<a asp-area="" asp-controller="Home" asp-action="Definition" asp-route-id="@reference.ReferenceId">@reference.GeorgianTitle;</a>
+					}
+				</p>
+			</div>
+			<div>
+				<h5>Similars:</h5>
+				<p>
+					@foreach (var similar in definition.Item1.Similars)
+					{
+						<a asp-area="" asp-controller="Home" asp-action="Definition" asp-route-id="@similar.Id">@similar.GeorgianTitle;</a>
+					}
+				</p>
+			</div>
+			<div style="margin-right:10px; margin-left:auto; display:flex; flex-direction:row;">
+				@if (User.Identity?.IsAuthenticated == true)
+				{
+					<img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" onclick="upvote(@definition.Item1.Id)" src="~/images/upvote.png" />
+				}
+				else
+				{
+					<a asp-area="" asp-controller="Auth" asp-action="SignIn" style="width:34px; height:34px; margin-right:10px; margin-left:auto;"><img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" src="~/images/upvote.png" /></a>
+				}
+				@if (definition.Item2 == true)
+				{
+					<p id="gu-@definition.Item1.Id" style="margin-right:10px; color:blue">@definition.Item1.UpvoteCount</p>
+				}
+				else
+				{
+					<p id="gu-@definition.Item1.Id" style="margin-right:10px; color:black">@definition.Item1.UpvoteCount</p>
+				}
+			</div>
+			<div style="margin-right:10px; margin-left:auto;">
+				<p style="text-align:right; margin-right:10px;">Total: @totalVotes</p>
+			</div>
+			<div style="margin-right:10px; margin-left:auto; display:flex; flex-direction:row;">
+				@if (User.Identity?.IsAuthenticated == true)
+				{
+					<img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" onclick="downvote(@definition.Item1.Id)" src="~/images/downvote.png" />
+				}
+				else
+				{
+					<a asp-area="" asp-controller="Auth" asp-action="SignIn" style="width:34px; height:34px; margin-right:10px; margin-left:auto;"><img style="width:34px; height:34px; margin-right:10px; margin-left:auto;" src="~/images/downvote.png" /></a>
+				}
+				@if (definition.Item2 == false)
+				{
+					<p id="gd-@definition.Item1.Id" style="margin-right:10px; color:blue">@definition.Item1.DownvoteCount</p>
+				}
+				else
+				{
+					<p id="gd-@definition.Item1.Id" style="margin-right:10px; color:black">@definition.Item1.DownvoteCount</p>
+				}
+			</div>
+		</div>
+		<br />
+	}
 </div>
+
+<script>
+
+	function getGeorgian(id) {
+		const englishDiv = document.getElementById('english-' + id);
+		if (englishDiv) {
+			englishDiv.style.display = 'none';
+		}
+
+		const georgianDiv = document.getElementById('georgian-' + id);
+		if (georgianDiv) {
+			georgianDiv.style.display = 'block';
+		}
+	}
+
+	function getEnglish(id) {
+		const georgianDiv = document.getElementById('georgian-' + id);
+		if (georgianDiv) {
+			georgianDiv.style.display = 'none';
+		}
+
+		const englishDiv = document.getElementById('english-' + id);
+		if (englishDiv) {
+			englishDiv.style.display = 'block';
+		}
+	}
+
+	function upvote(id){
+		const euElement = document.getElementById(`eu-${id}`);
+		const edElement = document.getElementById(`ed-${id}`);
+		const guElement = document.getElementById(`gu-${id}`);
+		const gdElement = document.getElementById(`gd-${id}`);
+
+		edElement.style.Color = 'black';
+		gdElement.style.color = 'black';
+
+		euElement.style.color = 'blue';
+		guElement.style.color = 'blue'
+	}
+	function downvote(id){
+		const euElement = document.getElementById(`eu-${id}`);
+		const edElement = document.getElementById(`ed-${id}`);
+		const guElement = document.getElementById(`gu-${id}`);
+		const gdElement = document.getElementById(`gd-${id}`);
+
+		euElement.style.color = 'black';
+		guElement.style.color = 'black'
+
+		edElement.style.Color = 'blue';
+		gdElement.style.color = 'blue';
+
+	}
+</script>

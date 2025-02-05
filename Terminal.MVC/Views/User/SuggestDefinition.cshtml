@@ -1,9 +1,8 @@
-﻿@model Terminal.MVC.Models.UserConfirmRegistrationModel
+﻿@model Terminal.Application.Definitions.Requests.DefinitionCreationRequest
 
 @{
-	ViewData["Title"] = "ConfirmRegistration";
+	ViewData["Title"] = "SuggestDefinition";
 }
-
 <style>
 	body {
 		background-color: #f8f9fa;
@@ -55,19 +54,29 @@
 	<div class="row justify-content-center">
 		<div class="col-md-6">
 			<div class="card">
-				<h2 class="card-title">Register</h2>
+				<h2 class="card-title">Suggest Definition</h2>
 				<hr>
-				<form asp-action="ConfirmRegistration">
+				<form asp-action="SuggestDefinition">
 					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 					<div class="form-group">
-						<label asp-for="Email" class="control-label"></label>
-						<input asp-for="Email" class="form-control" />
-						<span asp-validation-for="Email" class="text-danger"></span>
+						<label asp-for="GeorgianTitle" class="control-label"></label>
+						<input asp-for="GeorgianTitle" class="form-control" />
+						<span asp-validation-for="GeorgianTitle" class="text-danger"></span>
 					</div>
 					<div class="form-group">
-						<label asp-for="RegistrationToken" class="control-label"></label>
-						<input asp-for="RegistrationToken" class="form-control" />
-						<span asp-validation-for="RegistrationToken" class="text-danger"></span>
+						<label asp-for="EnglishTitle" class="control-label"></label>
+						<input asp-for="EnglishTitle" class="form-control" />
+						<span asp-validation-for="EnglishTitle" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="GeorgianContent" class="control-label"></label>
+						<input asp-for="GeorgianContent" class="form-control" />
+						<span asp-validation-for="GeorgianContent" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="EnglishContent" class="control-label"></label>
+						<input asp-for="EnglishContent" class="form-control" />
+						<span asp-validation-for="EnglishContent" class="text-danger"></span>
 					</div>
 					<div class="form-group">
 						<input type="submit" value="Create" class="btn btn-primary" />
